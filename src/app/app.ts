@@ -8,5 +8,5 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
 })
 export class App {
-  protected readonly title = signal('book-tracker');
+  protected readonly title = signal('Book Tracker 📚');
 }

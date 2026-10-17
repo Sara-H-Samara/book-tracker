@@ -1,0 +1,126 @@
+<section class="add-page">
+  <header class="page-head">
+    <h2>{{ isEditing() ? 'Edit book' : 'Add a book' }}</h2>
+    <span class="page-head__note">
+      {{ isEditing() ? 'Fix a detail or swap the cover.' : 'It goes straight onto your shelf.' }}
+    </span>
+  </header>
+
+  <div class="add-layout">
+    <!-- ================= Left: search ================= -->
+    <div class="add-col">
+      <p class="col-label">Search Open Library</p>
+
+      <form class="search" (submit)="search($event)">
+        <input
+          type="search"
+          [formField]="searchForm.query"
+          placeholder="Search by title or author…"
+          aria-label="Search books"
+        />
+        <button type="submit" [disabled]="searching()">
+          {{ searching() ? 'Searching…' : 'Search' }}
+        </button>
+      </form>
+
+      @if (searchError()) {
+        <p class="search-error">{{ searchError() }}</p>
+      }
+
+      @if (results().length > 0) {
+        <ul class="results">
+          @for (result of results(); track result.key) {
+            <li class="result">
+              @if (result.coverUrl) {
+                <img [src]="result.coverUrl" alt="" loading="lazy" />
+              } @else {
+                <div class="no-cover">📕</div>
+              }
+
+              <div class="result__info">
+                <strong>{{ result.title }}</strong>
+                <span
+                  >{{ result.author }}
+                  @if (result.year) {
+                    · {{ result.year }}
+                  }
+                </span>
+              </div>
+
+              <button class="secondary" type="button" (click)="use(result)">Use</button>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="hint">
+          {{
+            isEditing()
+              ? 'Pick a result to replace the title, author and cover.'
+              : 'Pick a result and it fills in the form for you.'
+          }}
+        </p>
+      }
+    </div>
+
+    <!-- ================= Right: the form ================= -->
+    <div class="add-col">
+      <p class="col-label">{{ isEditing() ? 'Book details' : 'Or write it in' }}</p>
+
+      <form class="card book-form" (submit)="submit($event)" novalidate>
+        @if (picked(); as extras) {
+          <div class="picked">
+            @if (extras.coverUrl) {
+              <img [src]="extras.coverUrl" alt="" />
+            } @else {
+              <div class="no-cover">📕</div>
+            }
+            <span class="picked__note">
+              From Open Library
+              @if (extras.year) {
+                · {{ extras.year }}
+              }
+            </span>
+            <button type="button" class="picked__clear" (click)="clearPicked()">Remove</button>
+          </div>
+        }
+
+        <div class="field">
+          <label for="title">Title</label>
+          <input
+            id="title"
+            [formField]="bookForm.title"
+            [class.has-error]="bookForm.title().touched() && bookForm.title().invalid()"
+            placeholder="e.g. Atomic Habits"
+            autocomplete="off"
+          />
+          <small class="error">
+            @if (bookForm.title().touched()) {
+              {{ bookForm.title().errors()[0]?.message }}
+            }
+          </small>
+        </div>
+
+        <div class="field">
+          <label for="author">Author</label>
+          <input
+            id="author"
+            [formField]="bookForm.author"
+            [class.has-error]="bookForm.author().touched() && bookForm.author().invalid()"
+            placeholder="e.g. James Clear"
+            autocomplete="off"
+          />
+          <small class="error">
+            @if (bookForm.author().touched()) {
+              {{ bookForm.author().errors()[0]?.message }}
+            }
+          </small>
+        </div>
+
+        <div class="actions">
+          <a [routerLink]="isEditing() ? ['/books', id()] : ['/']" class="cancel">Cancel</a>
+          <button type="submit">{{ isEditing() ? 'Save changes' : 'Add to shelf' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,82 @@
+<section class="shelf">
+  <header class="shelf__head">
+    <h2>My Books</h2>
+    <span class="shelf__count">{{ finishedCount() }} of {{ books().length }} finished</span>
+  </header>
+
+  @if (books().length > 0) {
+    <div class="filters" role="group" aria-label="Filter books">
+      @for (f of filters; track f.value) {
+        <button
+          type="button"
+          class="filter"
+          [class.is-active]="filter() === f.value"
+          [attr.aria-pressed]="filter() === f.value"
+          (click)="filter.set(f.value)"
+        >
+          {{ f.label }}
+          <span class="filter__count">{{ counts()[f.value] }}</span>
+        </button>
+      }
+    </div>
+  }
+
+  @if (books().length === 0) {
+    <div class="card empty">
+      <p>No books yet. <a routerLink="/add">Add your first one →</a></p>
+    </div>
+  } @else if (visibleBooks().length === 0) {
+    <div class="card empty">
+      <p>
+        @switch (filter()) {
+          @case ('reading') {
+            You're not reading anything right now. Pick one from your list!
+          }
+          @case ('finished') {
+            You haven't finished any books yet. Keep going! 📖
+          }
+          @default {
+            Nothing left to read. Time to <a routerLink="/add">add a new book</a>.
+          }
+        }
+      </p>
+    </div>
+  }
+
+  <ul class="shelf__grid">
+    @for (book of visibleBooks(); track book.id) {
+      <li class="card book" [attr.data-status]="book.status">
+        <button
+          class="remove"
+          type="button"
+          (click)="askDelete(book.id)"
+          [attr.aria-label]="'Remove ' + book.title"
+        >
+          ×
+        </button>
+
+        <h3 class="book__title">
+          <a [routerLink]="['/books', book.id]">{{ book.title }}</a>
+        </h3>
+        <p class="book__author">{{ book.author }}</p>
+
+        @if (confirmingId() === book.id) {
+          <div class="book__foot">
+            <span class="confirm-text">Remove?</span>
+            <div class="confirm-actions">
+              <button class="secondary" (click)="cancelDelete()">Cancel</button>
+              <button class="danger" (click)="confirmDelete(book.id)">Remove</button>
+            </div>
+          </div>
+        } @else {
+          <div class="book__foot">
+            <span class="stamp">{{ labels[book.status] }}</span>
+            <button class="secondary" (click)="advance(book)">
+              {{ nextAction[book.status].label }}
+            </button>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+</section>

@@ -1,0 +1,199 @@
+/* ---------- Back link ---------- */
+.back {
+  display: inline-block;
+  margin-bottom: 24px;
+  color: var(--muted);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+/* ---------- Layout: cover | info ---------- */
+.details {
+  --status: var(--status-to-read);
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.details[data-status='reading'] {
+  --status: var(--status-reading);
+}
+
+.details[data-status='finished'] {
+  --status: var(--status-finished);
+}
+
+@media (max-width: 640px) {
+  .details {
+    grid-template-columns: 1fr;
+  }
+
+  .cover {
+    max-width: 180px;
+  }
+}
+
+/* ---------- Cover ---------- */
+.cover img,
+.cover--blank {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3; /* the shape of a real book */
+  border-radius: 2px 6px 6px 2px;
+  object-fit: cover;
+  box-shadow:
+    inset 6px 0 0 rgb(0 0 0 / 0.12),
+    /* spine edge */ 0 18px 30px -18px rgb(31 42 68 / 0.6);
+  transform: rotate(-1.5deg);
+}
+
+/* no cover: a cloth-bound book with the title on it */
+.cover--blank {
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: var(--status);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* ---------- Info card ---------- */
+.info {
+  position: relative;
+}
+
+.stamp {
+  position: absolute;
+  top: calc(var(--line) - 4px);
+  right: 24px;
+  padding: 0 8px;
+  border: 2px solid var(--status);
+  border-radius: 3px;
+  color: var(--status);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: calc(var(--line) - 6px);
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+}
+
+.card .info__title {
+  margin: 0;
+  padding-right: 110px; /* room for the stamp */
+  font-size: 1.75rem;
+  line-height: calc(var(--line) * 1.5);
+}
+
+.card .info__author {
+  margin: 0 0 var(--line);
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ---------- Label / value pairs ---------- */
+.meta {
+  margin: 0 0 var(--line);
+}
+
+.meta div {
+  display: flex;
+  gap: 16px;
+}
+
+.meta dt {
+  width: 130px;
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meta dd {
+  margin: 0;
+}
+
+/* ---------- Footer strip, same as the Add form ---------- */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 0 -24px calc(var(--line) * -1);
+  padding: 14px 24px;
+  border-top: 1px solid var(--rule-blue);
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--card);
+}
+
+.actions button {
+  height: 40px;
+  padding: 0 18px;
+}
+
+.confirm-text {
+  margin-right: auto;
+  color: var(--rule-red);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+button.danger {
+  background: var(--rule-red);
+  border-color: var(--rule-red);
+}
+
+/* ---------- Not found ---------- */
+.not-found {
+  max-width: 560px;
+}
+
+/* ---------- Status picker: three joined buttons ---------- */
+.meta div {
+  align-items: center;
+  min-height: var(--line);
+}
+
+.status-picker {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--rule-blue);
+  border-radius: var(--radius);
+}
+
+.status-picker button {
+  height: calc(var(--line) - 2px);
+  padding: 0 12px;
+  border: none;
+  border-radius: 0;
+  background: var(--card);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.status-picker button + button {
+  border-left: 1px solid var(--rule-blue);
+}
+
+.status-picker button:hover {
+  color: var(--ink);
+}
+
+.status-picker button.is-active {
+  background: var(--status);
+  color: #fff;
+}

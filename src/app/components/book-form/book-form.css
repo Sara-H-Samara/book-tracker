@@ -1,0 +1,283 @@
+/* =========================================================
+   Page heading (matches the shelf page)
+   ========================================================= */
+.page-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--wood);
+}
+
+.page-head h2 {
+  margin: 0;
+}
+
+.page-head__note {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* =========================================================
+   Two columns: search | form
+   ========================================================= */
+.add-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .add-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* column titles, in the divider style */
+.col-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: none;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.col-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule-blue);
+}
+
+/* =========================================================
+   Left column: search
+   ========================================================= */
+.search {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--rule-blue);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+}
+
+.search input::placeholder {
+  color: var(--muted);
+  font-style: normal;
+  opacity: 0.6;
+}
+
+.search input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 0;
+  border-color: var(--primary);
+}
+
+.search button {
+  height: 40px;
+}
+
+.search-error {
+  color: var(--rule-red);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+/* ---------- Results ---------- */
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px 8px 8px;
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow:
+    0 1px 0 var(--rule-blue),
+    0 6px 14px -10px rgb(31 42 68 / 0.35);
+}
+
+.result img,
+.no-cover {
+  flex-shrink: 0;
+  width: 40px;
+  height: 60px;
+  border-radius: 2px;
+  background: var(--paper);
+  object-fit: cover;
+}
+
+.no-cover {
+  display: grid;
+  place-items: center;
+}
+
+.result__info {
+  flex: 1;
+  min-width: 0; /* long titles shrink instead of pushing the button out */
+  display: flex;
+  flex-direction: column;
+}
+
+.result__info strong {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result__info span {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* =========================================================
+   Right column: the form card
+   ========================================================= */
+
+/* ---------- Picked book preview ---------- */
+.picked {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: calc(var(--line) * 3); /* stays on the ruled lines */
+}
+
+.picked img,
+.picked .no-cover {
+  flex-shrink: 0;
+  width: 40px;
+  height: 60px;
+  border-radius: 2px;
+  background: var(--paper);
+  object-fit: cover;
+  box-shadow: 0 4px 10px -6px rgb(31 42 68 / 0.5);
+}
+
+.picked__note {
+  flex: 1;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.picked__clear {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-decoration: underline;
+}
+
+.picked__clear:hover {
+  color: var(--rule-red);
+}
+
+/* ---------- Fields ---------- */
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: var(--line);
+}
+
+/* writing that sits on the card's ruled line */
+.field input {
+  height: var(--line);
+  padding: 0;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+}
+
+.field input::placeholder {
+  color: var(--rule-blue);
+  font-style: italic;
+}
+
+.field input:focus-visible {
+  outline: none;
+  border-bottom-color: var(--primary);
+}
+
+.field input.has-error {
+  border-bottom-color: var(--rule-red);
+}
+
+/* always one line tall, so nothing jumps */
+.error {
+  height: var(--line);
+  line-height: var(--line);
+  color: var(--rule-red);
+  font-size: 0.8rem;
+}
+
+/* ---------- Footer strip: no ruled lines behind the buttons ---------- */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin: 0 -24px calc(var(--line) * -1); /* stretch to the card's edges and bottom */
+  padding: 14px 24px;
+  border-top: 1px solid var(--rule-blue);
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--card); /* covers the ruled lines */
+}
+
+.actions button {
+  height: 40px;
+  padding: 0 20px;
+}
+
+.cancel {
+  color: var(--muted);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.cancel:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}

@@ -1,0 +1,65 @@
+<a routerLink="/" class="back">← Back to shelf</a>
+
+@if (book(); as book) {
+  <article class="details" [attr.data-status]="book.status">
+    <!-- ---------- Cover ---------- -->
+    <div class="cover">
+      @if (book.coverUrl) {
+        <img [src]="book.coverUrl.replace('-M.jpg', '-L.jpg')" [alt]="'Cover of ' + book.title" />
+      } @else {
+        <div class="cover--blank">
+          <span>{{ book.title }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- ---------- Info card ---------- -->
+    <div class="card info">
+      <span class="stamp">{{ labels[book.status] }}</span>
+
+      <h2 class="info__title">{{ book.title }}</h2>
+      <p class="info__author">by {{ book.author }}</p>
+
+      <dl class="meta">
+        <div>
+          <dt>First published</dt>
+          <dd>{{ book.year ?? 'Unknown' }}</dd>
+        </div>
+        <div>
+          <dt>Status</dt>
+          <dd>
+            <div class="status-picker" role="group" aria-label="Reading status">
+              @for (s of statuses; track s) {
+                <button
+                  type="button"
+                  [class.is-active]="book.status === s"
+                  [attr.aria-pressed]="book.status === s"
+                  (click)="setStatus(s)"
+                >
+                  {{ labels[s] }}
+                </button>
+              }
+            </div>
+          </dd>
+        </div>
+      </dl>
+
+      <div class="actions">
+        @if (confirming()) {
+          <span class="confirm-text">Remove this book from your shelf?</span>
+          <button class="secondary" (click)="confirming.set(false)">Cancel</button>
+          <button class="danger" (click)="remove()">Remove</button>
+        } @else {
+          <button class="secondary" (click)="confirming.set(true)">Remove</button>
+          <button type="button" [routerLink]="['/books', book.id, 'edit']">Edit</button>
+        }
+      </div>
+    </div>
+  </article>
+} @else {
+  <div class="card not-found">
+    <h2>Book not found</h2>
+    <p>This book isn't on your shelf. It may have been removed.</p>
+    <a routerLink="/">Go back to your shelf</a>
+  </div>
+}

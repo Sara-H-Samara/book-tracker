@@ -1,0 +1,196 @@
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ===== Layout: two columns, everything rests on the bottom edge ===== */
+.masthead-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'intro shelf'
+    'nav   shelf';
+  column-gap: 32px;
+  row-gap: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 20px 0; /* no bottom padding: tabs and plank touch the edge */
+}
+
+.intro {
+  grid-area: intro;
+}
+
+.intro h1 {
+  margin-bottom: 4px;
+}
+
+.intro p {
+  margin: 0;
+  color: var(--rule-blue);
+}
+
+/* ===== Nav row: tabs on the left, account on the right ===== */
+.navbar {
+  grid-area: nav;
+  align-self: end;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-left: -16px; /* tab text lines up with the title */
+}
+
+/* ---------- Tabs ---------- */
+.nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav a {
+  padding: 10px 16px;
+  border-top: 3px solid transparent;
+  border-radius: var(--radius) var(--radius) 0 0;
+  color: var(--rule-blue);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--paper);
+}
+
+/* the current page: a tab that joins the page below */
+.nav a.active {
+  background: var(--paper);
+  color: var(--ink);
+  border-top-color: var(--rule-red);
+}
+
+/* ---------- Account: simple text, its own colors ---------- */
+.user {
+  --user-accent: var(--status-reading); /* gold, like the shelf's books */
+  --user-exit: #ef8a80; /* soft coral: a lighter --rule-red for dark backgrounds */
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.user__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--user-accent);
+  font-weight: 600;
+}
+
+/* small gold dot before the name */
+.user__name::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--user-accent);
+  box-shadow: 0 0 0 3px rgb(201 151 26 / 0.25); /* soft glow around the dot */
+}
+
+.logout {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--user-exit);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.logout:hover {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: var(--user-exit);
+  text-underline-offset: 4px;
+}
+
+/* visible to screen readers only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ===== The shelf ===== */
+.shelf {
+  grid-area: shelf;
+  align-self: end; /* plank sits on the bottom edge, level with the tabs */
+  display: flex;
+  align-items: flex-end; /* books stand on the bottom edge */
+  gap: 3px;
+  height: 104px;
+  padding: 0 12px;
+  border-bottom: 10px solid var(--wood); /* the wooden plank */
+  overflow: hidden;
+}
+
+/* default spine */
+.spine {
+  flex-shrink: 0;
+  width: 22px;
+  height: 78px;
+  border-radius: 2px 2px 0 0;
+  background-color: var(--status-to-read);
+  /* two thin bands, like the decoration on a real book spine */
+  background-image: linear-gradient(
+    to bottom,
+    transparent 10px,
+    rgb(255 255 255 / 0.35) 10px 13px,
+    transparent 13px 18px,
+    rgb(255 255 255 / 0.35) 18px 20px,
+    transparent 20px
+  );
+}
+
+/* vary width, height and colour so it looks like a real shelf */
+.spine:nth-child(3n) {
+  height: 90px;
+  background-color: var(--status-reading);
+}
+
+.spine:nth-child(4n) {
+  width: 30px;
+  height: 70px;
+  background-color: var(--status-finished);
+}
+
+.spine:nth-child(5n) {
+  width: 16px;
+  height: 94px;
+  background-color: var(--paper);
+}
+
+.spine:nth-child(7n) {
+  height: 64px;
+  background-color: var(--rule-red);
+}
+
+/* one book leaning over */
+.spine:nth-child(9) {
+  margin-left: 14px;
+  transform: rotate(-12deg);
+  transform-origin: bottom left;
+}
+
+/* ===== Small screens: stack title, shelf, then tabs ===== */
+@media (max-width: 640px) {
+  .masthead-inner {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'intro'
+      'shelf'
+      'nav';
+  }
+}

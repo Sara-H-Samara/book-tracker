@@ -1,0 +1,94 @@
+<section class="auth">
+  <header class="auth__head">
+    <h2>{{ isSignup() ? 'Create your account' : 'Welcome back' }}</h2>
+    <p>
+      {{ isSignup() ? 'Start your own shelf in a few seconds.' : 'Log in to see your shelf.' }}
+    </p>
+  </header>
+
+  <form class="card auth__card" (submit)="submit($event)" novalidate>
+    @if (isSignup()) {
+      <div class="field">
+        <label for="name">Name</label>
+        <input
+          id="name"
+          [formField]="authForm.name"
+          [class.has-error]="authForm.name().touched() && authForm.name().invalid()"
+          placeholder="e.g. Sara"
+          autocomplete="name"
+        />
+        <small class="error">
+          @if (authForm.name().touched()) {
+            {{ authForm.name().errors()[0]?.message }}
+          }
+        </small>
+      </div>
+    }
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        [formField]="authForm.email"
+        [class.has-error]="authForm.email().touched() && authForm.email().invalid()"
+        placeholder="you@example.com"
+        autocomplete="email"
+      />
+      <small class="error">
+        @if (authForm.email().touched()) {
+          {{ authForm.email().errors()[0]?.message }}
+        }
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <div class="password">
+        <input
+          id="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          [formField]="authForm.password"
+          [class.has-error]="authForm.password().touched() && authForm.password().invalid()"
+          placeholder="At least 8 characters"
+          [attr.autocomplete]="isSignup() ? 'new-password' : 'current-password'"
+        />
+        <button
+          type="button"
+          class="toggle-password"
+          (click)="showPassword.set(!showPassword())"
+          [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+        >
+          {{ showPassword() ? 'Hide' : 'Show' }}
+        </button>
+      </div>
+      <small class="error">
+        @if (authForm.password().touched()) {
+          {{ authForm.password().errors()[0]?.message }}
+        }
+      </small>
+    </div>
+
+    @if (serverError()) {
+      <p class="server-error" role="alert">{{ serverError() }}</p>
+    }
+
+    <div class="actions">
+      <button type="submit" [disabled]="submitting()">
+        @if (submitting()) {
+          {{ isSignup() ? 'Creating account…' : 'Logging in…' }}
+        } @else {
+          {{ isSignup() ? 'Create account' : 'Log in' }}
+        }
+      </button>
+    </div>
+  </form>
+
+  <p class="switch">
+    @if (isSignup()) {
+      Already have an account? <a routerLink="/login">Log in</a>
+    } @else {
+      New here? <a routerLink="/signup">Create an account</a>
+    }
+  </p>
+</section>

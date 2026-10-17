@@ -1,1 +1,131 @@
-/* You can add global styles to this file, and also import other style files */
+/* =========================================================
+   Design tokens — every colour and font lives here, once.
+   ========================================================= */
+:root {
+  --ink: #1f2a44;
+  --paper: #eef1f6;
+  --card: #ffffff;
+  --muted: #5d6680;
+  --rule-blue: #c9d3e6;
+  --rule-red: #c8463d;
+  --primary: #3346a8;
+  --wood: #8a5a3b;
+
+  --status-to-read: #5b6fa8;
+  --status-reading: #c9971a;
+  --status-finished: #3f8a68;
+
+  --font-display: 'Literata', Georgia, serif;
+  --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+
+  --line: 28px; /* height of one ruled line on an index card */
+  --radius: 4px;
+}
+
+/* =========================================================
+   Base
+   ========================================================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 0.5em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+p {
+  max-width: 65ch; /* comfortable reading width */
+  margin: 0 0 1em;
+}
+
+/* =========================================================
+   Layout
+   ========================================================= */
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+/* =========================================================
+   Index card: white card, red top line, blue ruled lines
+   ========================================================= */
+.card {
+  padding: var(--line) 24px;
+  border-radius: var(--radius);
+  background-color: var(--card);
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(var(--line) - 1px),
+    var(--rule-blue) calc(var(--line) - 1px)
+  );
+  background-size: 100% var(--line);
+  box-shadow:
+    inset 0 3px 0 var(--rule-red),
+    0 1px 0 var(--rule-blue),
+    0 8px 18px -12px rgb(31 42 68 / 0.35);
+  line-height: var(--line); /* text sits on the ruled lines */
+}
+
+.card h2,
+.card h3,
+.card p {
+  margin: 0 0 var(--line);
+  line-height: var(--line);
+}
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+button {
+  padding: 6px 14px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: #fff;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--primary);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* keyboard users can always see where they are */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}

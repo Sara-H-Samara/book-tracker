@@ -1,0 +1,45 @@
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="intro">
+      <h1>Book Tracker</h1>
+      <p>What you're reading, what you've finished, and what's next.</p>
+    </div>
+
+    @if (auth.user(); as user) {
+      <div class="navbar">
+        <nav class="nav">
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            My Shelf
+          </a>
+          <a routerLink="/add" routerLinkActive="active">Add Book</a>
+        </nav>
+
+        <div class="user">
+          <span class="user__name">
+            <span class="sr-only">Signed in as</span>
+            {{ user.name | titlecase }}
+          </span>
+          <button type="button" class="logout" (click)="logout()">Log out</button>
+        </div>
+      </div>
+    }
+
+    <!-- decorative: screen readers skip it -->
+    <div class="shelf" aria-hidden="true">
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+      <span class="spine"></span>
+    </div>
+  </div>
+</header>

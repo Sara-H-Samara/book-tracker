@@ -1,0 +1,26 @@
+### Add Dune to Sara's shelf as READING → 201, startedAt = today
+POST http://localhost:8080/api/shelf
+Content-Type: application/json
+
+{ "userId": 1, "bookId": 1, "status": "READING" }
+
+### Add a FINISHED book → 201, currentPage = last page, finishedAt = today
+POST http://localhost:8080/api/shelf
+Content-Type: application/json
+
+{ "userId": 1, "bookId": 3, "status": "FINISHED" }
+
+### No status → defaults to WANT_TO_READ
+POST http://localhost:8080/api/shelf
+Content-Type: application/json
+
+{ "userId": 1, "bookId": 2 }
+
+### Same book again → 409
+POST http://localhost:8080/api/shelf
+Content-Type: application/json
+
+{ "userId": 1, "bookId": 1, "status": "READING" }
+
+### Sara's shelf → 200
+GET http://localhost:8080/api/shelf?userId=1

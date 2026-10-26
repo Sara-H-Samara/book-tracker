@@ -1,5 +1,6 @@
 package com.sara.booktracker.exception;
 
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,5 +32,11 @@ public class GlobalExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation failed");
         problem.setProperty("errors", errors);
         return problem;
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ProblemDetail handleBadSort(PropertyReferenceException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                "Cannot sort by '" + ex.getPropertyName() + "'");
     }
 }

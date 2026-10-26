@@ -1,9 +1,13 @@
 package com.sara.booktracker.controller;
 
+import com.sara.booktracker.dto.BookFilter;
 import com.sara.booktracker.dto.BookRequest;
 import com.sara.booktracker.dto.BookResponse;
+import com.sara.booktracker.dto.PageResponse;
 import com.sara.booktracker.service.BookService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,8 +26,10 @@ public class BookController {
     }
 
     @GetMapping
-    public List<BookResponse> getAll(@RequestParam(required = false) String search) {
-        return bookService.findAll(search);
+    public PageResponse<BookResponse> getAll(
+            @Valid BookFilter filter,
+            @PageableDefault(size = 10, sort = "title") Pageable pageable) {
+        return bookService.search(filter, pageable);
     }
 
     @GetMapping("/{id}")

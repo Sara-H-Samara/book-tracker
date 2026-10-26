@@ -1,7 +1,9 @@
 package com.sara.booktracker.service.impl;
 
+import com.sara.booktracker.dto.BookFilter;
 import com.sara.booktracker.dto.BookRequest;
 import com.sara.booktracker.dto.BookResponse;
+import com.sara.booktracker.dto.PageResponse;
 import com.sara.booktracker.entity.Author;
 import com.sara.booktracker.entity.Book;
 import com.sara.booktracker.entity.Genre;
@@ -10,42 +12,36 @@ import com.sara.booktracker.exception.ResourceNotFoundException;
 import com.sara.booktracker.mapper.BookMapper;
 import com.sara.booktracker.repository.AuthorRepository;
 import com.sara.booktracker.repository.BookRepository;
+import com.sara.booktracker.repository.BookSpecifications;
 import com.sara.booktracker.repository.GenreRepository;
 import com.sara.booktracker.service.BookService;
 import com.sara.booktracker.singleton.ActivityLog;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
-    private final BookMapper bookMapper;
 
-    public BookServiceImpl(BookRepository bookRepository,
-                           AuthorRepository authorRepository,
-                           GenreRepository genreRepository,
-                           BookMapper bookMapper) {
-        this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;
-        this.genreRepository = genreRepository;
-        this.bookMapper = bookMapper;
-    }
+    @Autowired
+    private BookMapper bookMapper;
 
     @Override
-    public List<BookResponse> findAll(String search) {
-        List<Book> books = (search == null || search.isBlank())
-                ? bookRepository.findAll()
-                : bookRepository.findByTitleContainingIgnoreCase(search.trim());
-
-        return books.stream().map(bookMapper::toResponse).toList();
+    public PageResponse<BookResponse> search(BookFilter filter, Pageable pageable) {
+        Page<Book> books = bookRepository.findAll(BookSpecifications.fromFilter(filter), pageable);
+        return PageResponse.from(books.map(bookMapper::toResponse));
     }
 
     @Override

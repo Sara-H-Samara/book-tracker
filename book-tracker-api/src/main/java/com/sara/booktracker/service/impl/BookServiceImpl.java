@@ -17,7 +17,6 @@ import com.sara.booktracker.repository.GenreRepository;
 import com.sara.booktracker.service.BookService;
 import com.sara.booktracker.singleton.ActivityLog;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,9 +33,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
-
-    @Autowired
-    private BookMapper bookMapper;
+    private final BookMapper bookMapper;
 
     @Override
     public PageResponse<BookResponse> search(BookFilter filter, Pageable pageable) {

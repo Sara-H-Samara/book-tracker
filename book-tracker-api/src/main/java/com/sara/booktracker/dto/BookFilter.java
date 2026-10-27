@@ -1,5 +1,6 @@
 package com.sara.booktracker.dto;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.PositiveOrZero;
 
 /**
@@ -13,4 +14,13 @@ public record BookFilter(
         @PositiveOrZero Integer minPages,
         @PositiveOrZero Integer maxPages
 ) {
+
+    /**
+     * Cross-field rule: if both are sent, minPages can't be bigger than maxPages.
+     */
+    @AssertTrue(message = "minPages must be less than or equal to maxPages")
+    public boolean isPageRangeValid() {
+        return minPages == null || maxPages == null || minPages <= maxPages;
+    }
+
 }

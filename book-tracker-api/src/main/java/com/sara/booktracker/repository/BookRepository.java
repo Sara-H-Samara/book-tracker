@@ -1,6 +1,8 @@
 package com.sara.booktracker.repository;
 
 import com.sara.booktracker.entity.Book;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +13,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
+
+    @Override
+    @EntityGraph(attributePaths = {"author"})
+    Page<Book> findAll(Specification<Book> spec, Pageable pageable);
 
     boolean existsByIsbn(String isbn);
 
@@ -51,4 +57,13 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     //  Native SQL
     @Query(value = "SELECT * FROM books WHERE published_year < :year ORDER BY published_year", nativeQuery = true)
     List<Book> findOlderThan(@Param("year") int year);
+
+    //  GROUP BY ex.
+    @Query("""
+    SELECT new com.sara.booktracker.dto.GenreCount(g.name, COUNT(b))
+    FROM Book b JOIN b.genres g
+    GROUP BY g.name
+    ORDER BY COUNT(b) DESC
+    """)
+    List<Object[]> countBooksPerGenre();
 }

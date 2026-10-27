@@ -1,5 +1,6 @@
 package com.sara.booktracker.repository;
 
+import com.sara.booktracker.dto.GenreCount;
 import com.sara.booktracker.entity.Book;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -65,5 +66,5 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     GROUP BY g.name
     ORDER BY COUNT(b) DESC
     """)
-    List<Object[]> countBooksPerGenre();
+    List<GenreCount> countBooksPerGenre();
 }

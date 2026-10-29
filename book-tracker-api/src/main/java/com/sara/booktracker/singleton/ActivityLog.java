@@ -1,6 +1,7 @@
 package com.sara.booktracker.singleton;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -13,10 +14,14 @@ public final class ActivityLog {
 
     private static final int MAX_EVENTS = 20;
 
+    /** One thing that happened, and when (UTC). */
+    public record Event(Instant timestamp, String message) {
+    }
+
     // 2. The single instance, created once when the class is first loaded
     private static final ActivityLog INSTANCE = new ActivityLog();
 
-    private final Deque<String> events = new ArrayDeque<>();
+    private final Deque<Event> events = new ArrayDeque<>();
 
     // 1. Private constructor: nobody outside can call "new ActivityLog()"
     private ActivityLog() {
@@ -29,14 +34,14 @@ public final class ActivityLog {
 
     /** Adds an event at the top, and keeps only the latest 20. */
     public synchronized void record(String message) {
-        events.addFirst(LocalDateTime.now().withNano(0) + " - " + message);
+        events.addFirst(new Event(Instant.now().truncatedTo(ChronoUnit.SECONDS), message));
         if (events.size() > MAX_EVENTS) {
             events.removeLast();
         }
     }
 
     /** A copy of the events, newest first. */
-    public synchronized List<String> recentEvents() {
+    public synchronized List<Event> recentEvents() {
         return List.copyOf(events);
     }
 }

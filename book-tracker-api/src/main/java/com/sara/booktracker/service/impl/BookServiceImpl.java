@@ -1,5 +1,6 @@
 package com.sara.booktracker.service.impl;
 
+import com.sara.booktracker.aspect.LogActivity;
 import com.sara.booktracker.dto.BookFilter;
 import com.sara.booktracker.dto.BookRequest;
 import com.sara.booktracker.dto.BookResponse;
@@ -23,7 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +41,29 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<BookResponse> search(BookFilter filter, Pageable pageable) {
-        Page<Book> books = bookRepository.findAll(BookSpecifications.fromFilter(filter), pageable);
-        return PageResponse.from(books.map(bookMapper::toResponse));
+        // Query 1: the page of books (+ author). Paging is correct here.
+        Page<Book> page = bookRepository.findAll(BookSpecifications.fromFilter(filter), pageable);
+
+        if (page.isEmpty()) {
+            return PageResponse.from(page.map(bookMapper::toResponse));
+        }
+
+        // Collect the ids of the books on this page
+        List<Long> ids = page.getContent().stream()
+                .map(Book::getId)
+                .toList();
+
+        // Query 2: the same books, now WITH their genres
+        Map<Long, Book> booksWithGenres = bookRepository.findByIdIn(ids).stream()
+                .collect(Collectors.toMap(Book::getId, Function.identity()));
+
+        // Keep the page order, but use the books that have genres loaded
+        Page<BookResponse> result = page.map(book ->
+                bookMapper.toResponse(booksWithGenres.get(book.getId())));
+
+        return PageResponse.from(result);
     }
 
     @Override
@@ -50,6 +75,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
+    @LogActivity("Book created")
     public BookResponse create(BookRequest request) {
         if (request.isbn() != null && bookRepository.existsByIsbn(request.isbn())) {
             throw new DuplicateResourceException("A book with isbn " + request.isbn() + " already exists");
@@ -64,7 +90,6 @@ public class BookServiceImpl implements BookService {
         book.setGenres(resolveGenres(request.genreIds()));
 
         Book saved = bookRepository.save(book);
-        ActivityLog.getInstance().record("Book created: " + saved.getTitle());
         return bookMapper.toResponse(saved);
     }
 

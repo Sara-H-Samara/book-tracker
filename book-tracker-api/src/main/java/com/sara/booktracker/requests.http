@@ -1,10 +1,32 @@
-### Add Dune to Sara's shelf as READING → 201, startedAt = today
+### Every response, success or error, uses the same envelope:
+### { "status", "message", "data", "errors", "errorCode", "timestamp" }
+### Success: "data" = payload, "errors" = [], "errorCode" = null
+### Error:   "data" = null, "errors" = field problems (or []), "errorCode" = e.g. "RESOURCE_NOT_FOUND"
+
+### ===================== Books =====================
+
+### Search → 200, data = { "content": [...], "page": { "number", "size", "totalElements", "totalPages" } }
+### Each book has "author": { "id", "name" } and "genres": [ { "id", "name" } ]
+GET http://localhost:8080/api/books?genre=classic&size=2
+
+### One book → 200, data = the book
+GET http://localhost:8080/api/books/1
+
+### Unknown book → 404, data = null, errorCode = RESOURCE_NOT_FOUND
+GET http://localhost:8080/api/books/999
+
+### Invalid filter → 400, errors = [ { "field": "pageRangeValid", "message": "..." } ]
+GET http://localhost:8080/api/books?minPages=500&maxPages=100
+
+### ===================== Shelf =====================
+
+### Add Dune to Sara's shelf as READING → 201, data.startedAt = today, data.book = { "id", "title", "pages", "author" }
 POST http://localhost:8080/api/shelf
 Content-Type: application/json
 
 { "userId": 1, "bookId": 1, "status": "READING" }
 
-### Add a FINISHED book → 201, currentPage = last page, finishedAt = today
+### Add a FINISHED book → 201, data.currentPage = last page, data.finishedAt = today
 POST http://localhost:8080/api/shelf
 Content-Type: application/json
 
@@ -16,11 +38,24 @@ Content-Type: application/json
 
 { "userId": 1, "bookId": 2 }
 
-### Same book again → 409
+### Same book again → 409, errorCode = DUPLICATE_RESOURCE
 POST http://localhost:8080/api/shelf
 Content-Type: application/json
 
 { "userId": 1, "bookId": 1, "status": "READING" }
 
-### Sara's shelf → 200
+### Sara's shelf → 200, first page (20 per page, oldest entry first)
 GET http://localhost:8080/api/shelf?userId=1
+
+### Sara's shelf, 2 per page, second page, sorted by book title
+GET http://localhost:8080/api/shelf?userId=1&page=1&size=2&sort=book.title
+
+### ===================== Stats =====================
+
+### Sara's reading stats for 2026 → 200, data = { "userId", "year", "booksFinished", "pagesRead", "finishedByGenre" }
+GET http://localhost:8080/api/users/1/stats?year=2026
+
+### ===================== Activity =====================
+
+### Latest events, newest first → 200, data = { "events": [ { "timestamp": "...Z", "message": "..." } ] }
+GET http://localhost:8080/api/activity

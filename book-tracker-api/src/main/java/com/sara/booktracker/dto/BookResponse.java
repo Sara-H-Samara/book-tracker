@@ -1,6 +1,6 @@
 package com.sara.booktracker.dto;
 
-import java.util.Set;
+import java.util.List;
 
 public record BookResponse(
         Long id,
@@ -8,8 +8,7 @@ public record BookResponse(
         String isbn,
         Integer pages,
         Integer publishedYear,
-        Long authorId,
-        String authorName,
-        Set<String> genres
+        AuthorSummary author,        // null when the book has no author
+        List<GenreSummary> genres    // sorted by name
 ) {
 }

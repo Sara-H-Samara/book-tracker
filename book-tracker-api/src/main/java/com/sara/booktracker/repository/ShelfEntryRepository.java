@@ -3,6 +3,9 @@ package com.sara.booktracker.repository;
 import com.sara.booktracker.dto.GenreCount;
 import com.sara.booktracker.entity.ReadingStatus;
 import com.sara.booktracker.entity.ShelfEntry;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +18,9 @@ public interface ShelfEntryRepository extends JpaRepository<ShelfEntry, Long> {
     // "UserId" walks the relation: shelfEntry.user.id
     boolean existsByUserIdAndBookId(Long userId, Long bookId);
 
-    List<ShelfEntry> findByUserId(Long userId);
+    // Loads each entry's book + author in the same SELECT, so mapping a page never triggers extra queries
+    @EntityGraph(attributePaths = {"book", "book.author"})
+    Page<ShelfEntry> findByUserId(Long userId, Pageable pageable);
 
     long countByUserIdAndStatusAndFinishedAtBetween(
             Long userId, ReadingStatus status, LocalDate from, LocalDate to);

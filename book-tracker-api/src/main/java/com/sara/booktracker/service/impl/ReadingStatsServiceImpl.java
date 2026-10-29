@@ -3,6 +3,7 @@ package com.sara.booktracker.service.impl;
 import com.sara.booktracker.dto.GenreCount;
 import com.sara.booktracker.dto.ReadingStatsResponse;
 import com.sara.booktracker.entity.ReadingStatus;
+import com.sara.booktracker.entity.User;
 import com.sara.booktracker.exception.ResourceNotFoundException;
 import com.sara.booktracker.repository.ShelfEntryRepository;
 import com.sara.booktracker.repository.UserRepository;
@@ -44,5 +45,12 @@ public class ReadingStatsServiceImpl implements ReadingStatsService {
                 .countFinishedPerGenre(userId, finished, from, to);
 
         return new ReadingStatsResponse(userId, targetYear, booksFinished, pagesRead, byGenre);
+    }
+
+    @Override
+    public ReadingStatsResponse getStatsForUsername(String username, Integer year) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+        return getStats(user.getId(), year);
     }
 }

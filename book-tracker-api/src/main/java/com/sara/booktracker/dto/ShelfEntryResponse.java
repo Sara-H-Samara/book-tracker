@@ -6,12 +6,10 @@ import java.time.LocalDate;
 
 public record ShelfEntryResponse(
         Long id,
-        Long bookId,
-        String bookTitle,
         ReadingStatus status,
         Integer currentPage,
-        Integer totalPages,
         LocalDate startedAt,
-        LocalDate finishedAt
+        LocalDate finishedAt,
+        BookSummary book
 ) {
 }

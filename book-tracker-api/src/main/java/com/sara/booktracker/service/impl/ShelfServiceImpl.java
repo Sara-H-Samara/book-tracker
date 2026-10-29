@@ -1,6 +1,7 @@
 package com.sara.booktracker.service.impl;
 
 import com.sara.booktracker.dto.AddToShelfRequest;
+import com.sara.booktracker.dto.PageResponse;
 import com.sara.booktracker.dto.ShelfEntryResponse;
 import com.sara.booktracker.entity.Book;
 import com.sara.booktracker.entity.ShelfEntry;
@@ -15,10 +16,10 @@ import com.sara.booktracker.repository.UserRepository;
 import com.sara.booktracker.service.ShelfService;
 import com.sara.booktracker.singleton.ActivityLog;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,12 +59,11 @@ public class ShelfServiceImpl implements ShelfService {
     }
 
     @Override
-    public List<ShelfEntryResponse> getShelf(Long userId) {
+    public PageResponse<ShelfEntryResponse> getShelf(Long userId, Pageable pageable) {
         if (!userRepository.existsById(userId)) {
             throw new ResourceNotFoundException("User", userId);
         }
-        return shelfEntryRepository.findByUserId(userId).stream()
-                .map(shelfEntryMapper::toResponse)
-                .toList();
+        Page<ShelfEntry> entries = shelfEntryRepository.findByUserId(userId, pageable);
+        return PageResponse.from(entries.map(shelfEntryMapper::toResponse));
     }
 }

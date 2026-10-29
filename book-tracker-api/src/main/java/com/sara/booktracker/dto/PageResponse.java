@@ -5,28 +5,33 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 /**
- * A stable, simple JSON shape for any paged list (books, genres, ...).
- * <T> means "any type": PageResponse<BookResponse>, PageResponse<GenreResponse>, ...
+ * A stable, simple JSON shape for any paged list (books, shelf entries, ...):
+ * { "content": [...], "page": { "number", "size", "totalElements", "totalPages" } }
+ * <T> means "any type": PageResponse<BookResponse>, PageResponse<ShelfEntryResponse>, ...
  */
 public record PageResponse<T>(
         List<T> content,
-        int page,
-        int size,
-        long totalElements,
-        int totalPages,
-        boolean first,
-        boolean last
+        PageMetadata page
 ) {
+
+    /** number is 0-based: the first page is 0. */
+    public record PageMetadata(
+            int number,
+            int size,
+            long totalElements,
+            int totalPages
+    ) {
+    }
 
     public static <T> PageResponse<T> from(Page<T> page) {
         return new PageResponse<>(
                 page.getContent(),
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages(),
-                page.isFirst(),
-                page.isLast()
+                new PageMetadata(
+                        page.getNumber(),
+                        page.getSize(),
+                        page.getTotalElements(),
+                        page.getTotalPages()
+                )
         );
     }
 }

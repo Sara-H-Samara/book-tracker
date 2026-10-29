@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
@@ -20,6 +21,9 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     Page<Book> findAll(Specification<Book> spec, Pageable pageable);
 
     boolean existsByIsbn(String isbn);
+
+    @EntityGraph(attributePaths = {"author", "genres"})
+    List<Book> findByIdIn(Collection<Long> ids);
 
     //---------Derived Queries------------
 
